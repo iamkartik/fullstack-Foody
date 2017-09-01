@@ -20,6 +20,7 @@ const app = express();
 app.set('views', path.join(__dirname, 'views')); // this is the folder where we keep our pug files
 app.set('view engine', 'pug'); // we use the engine pug, mustache or EJS work great too
 
+// app.use is used to add global middlewares
 // serves up static files from the public folder. Anything in public/ will just be served up as the file it is
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -69,6 +70,8 @@ app.use((req, res, next) => {
 });
 
 // After allllll that above middleware, we finally handle our own routes!
+// using routes before the middleware can cause issues as the req will straight go to
+// the routes and send a response . any code after that will not be used eg passport, bodyparser
 app.use('/', routes);
 
 // If that above routes didnt work, we 404 them and forward to error handler
