@@ -1,5 +1,8 @@
 /*
   This is a file of data and helper functions that we can expose and use in our templating function
+  the variables here are available throughout the application
+  the file is imported in app.js and made available to res.locals
+  add any library that is used throughout the app here
 */
 
 // FS is a built in module to node that let's us read files from the system we're running on
@@ -18,8 +21,12 @@ exports.staticMap = ([lng, lat]) => `https://maps.googleapis.com/maps/api/static
 exports.icon = (name) => fs.readFileSync(`./public/images/icons/${name}.svg`);
 
 // Some details about the site
-exports.siteName = `Now That's Delicious!`;
-
+// can change sitename here to appear in all pages
+exports.siteName = `Foody !!`;
+// These are the links appearing in the menu / nav bar 
+// to add a new nav simply add in the menu object
+// icon is taken from above exports.icon where th function takes a name 
+// and returns an svg with same name
 exports.menu = [
   { slug: '/stores', title: 'Stores', icon: 'store', },
   { slug: '/tags', title: 'Tags', icon: 'tag', },

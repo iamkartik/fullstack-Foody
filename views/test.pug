@@ -1,0 +1,27 @@
+// to add an existing template use layout
+// extends is the first line 
+// inside a layout there are blocks whick ypu can replace,add to
+// adding to block content some text
+
+
+// to add a class just add .classname after the element
+// for id put a #id 
+// in case no element is written just the classname , then div will be defaulted as the element
+.without-element-div
+    p this div is not written in pug 
+    // for img and other elements provide src inside()
+    img(src="#" alt="some image")
+div.wrapper.parent
+    p#name Hello!
+// adding content in next line use pipe |
+h2
+    | Ola 
+    span Cómo estás?
+    // adding data during render use #{variablename}
+    p my name is #{name}
+    // to add data in attributes , src , alt etc use es6 syntax `${variablename}`
+    img(src="" alt=`${name}`)
+    // to use javascript inside pug use -
+    // or run inside #{name.toUpperCase()} 
+    - const upperCase =  name.toUpperCase();
+    p name in upper case #{upperCase}

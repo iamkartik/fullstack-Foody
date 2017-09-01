@@ -52,6 +52,9 @@ app.use(flash());
 
 // pass variables to our templates + all requests
 app.use((req, res, next) => {
+  // h is now available to all the templates 
+  // the data passed during render is stored in locals 
+  // add helper.js to that list for all the req
   res.locals.h = helpers;
   res.locals.flashes = req.flash();
   res.locals.user = req.user || null;
