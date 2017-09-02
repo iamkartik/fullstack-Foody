@@ -5,13 +5,8 @@ const express = require('express');
 const router = express.Router();
 const storeController = require('../controllers/storeController');
 
-// Do work here
-// req.query for query params, req.body for form , req.params for path params
 
-// for every req that comes to / , it goes to custom middleware - myMiddleware
-// after that the next function it get's passed to is homePage
-// the two functions represent the order of execution
-// middleware after req and before response
-router.get('/',storeController.myMiddleware,storeController.myMiddleware2,storeController.homePage);
+router.get('/',storeController.homePage);
+router.get('/add',storeController.addStore);
 
 module.exports = router;

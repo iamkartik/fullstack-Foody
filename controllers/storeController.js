@@ -1,20 +1,13 @@
 // exports is a global variable 
 // whatever follows exports can be imported in another file
 
-// writing a custom middleware
-exports.myMiddleware = (req,res,next)=>{
-    req.name = 'Kartik Sharma';
-    // next calls the next function in order of execution
-    next();
-};
-
-
-exports.myMiddleware2 = (req,res,next)=>{
-    req.age = '26';
-    // next calls the next function in order of execution
-    next();
-};
-
+// index page render
 exports.homePage = (req,res)=>{
     res.render('index',{name:req.name,age:req.age});
+};
+
+// add a new store info
+exports.addStore = (req,res)=>{
+    // use edit store to add/edit store
+    res.render('editStore',{title:'Add a new Store !'});
 };
