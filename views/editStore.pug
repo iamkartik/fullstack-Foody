@@ -1,6 +1,16 @@
 extends layout
 
+include mixins/_storeForm
+
+
 block content
     .inner
         // if the element is taking a variable '=' can be used in place of #{}
         h2= title
+        // use mixins to add/edit a store . ( a reusable component ) pass data to get html
+        // Mixins are a form of object composition, where component features get mixed into a 
+        // composite object so that properties of each mixin become properties of the composite object.
+        // think having vanilla ice cream and adding flavors to it rather than having different tubs of all flavors
+        // https://medium.com/javascript-scene/functional-mixins-composing-software-ffb66d5e731c
+        // use +mixinName to use a Mixin
+        +storeForm

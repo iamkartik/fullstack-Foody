@@ -6,8 +6,12 @@ exports.homePage = (req,res)=>{
     res.render('index',{name:req.name,age:req.age});
 };
 
-// add a new store info
+// render the add store page
 exports.addStore = (req,res)=>{
     // use edit store to add/edit store
     res.render('editStore',{title:'Add a new Store !'});
 };
+
+exports.createStore = (req,res)=>{
+    res.json(req.body);
+}
