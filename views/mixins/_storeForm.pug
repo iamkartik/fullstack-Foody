@@ -2,18 +2,21 @@ mixin storeForm(store = {})
     // in case of edit the store variable gets the store data
     // in case of add the store variable defaults to an empty object
 
-    form(action="/add" method="POST" class="card")
+    form(action=`/add/${store._id || ''}` method="POST" class="card")
         // the name of input should match that of schema defined in model
         // if name="desc" in form it will not work ,it has to be name="description"
         label(for="name") Name
-        input(type="text" name="name")
+        input(type="text" name="name" value=store.name)
         label(for="description") Description
-        textarea(name="description")
+        // textarea there is no value so set with =
+        textarea(name="description")= store.description
         - const choices = ['Wifi','Open Late','Family Friendly','Vegetarian','Licensed']
+        - // for edit define initialize an array
+        - const tags = store.tags || [] 
         // define ul and loop over the choices 
         ul.tags
             each choice in choices
                 .tag.tag__choice
-                    input(type="checkbox" id=choice value=choice name="tags")
+                    input(type="checkbox" id=choice value=choice name="tags" checked=(tags.includes(choice)))
                     label(for=choice) #{choice}
         input(type="submit" value="Save !" class="button")            

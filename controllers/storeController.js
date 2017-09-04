@@ -35,3 +35,23 @@ exports.getStores = async (req,res)=>{
     // if property name equals the value name ,no need to pass the key explicitly
     res.render('stores',{title:'Stores',stores});
 }
+
+exports.editStore = async (req,res)=>{
+    // get the store with the id , id in req.params(in url)
+    const store = await Store.findOne({ _id:req.params.id });
+    // TODO::confirm they are the owners
+    // store key is not required
+    res.render('editStore',{title:`Edit ${store.name}`,store});
+}
+
+exports.updateStore = async (req,res)=>{
+    // find the store and update
+    const store = await Store.findOneAndUpdate({ _id:req.params.id },req.body,{
+        new:true, // return the updated store rather than the old one
+        runValidators:true //the required fields only run on creation , 
+                           // runValidators forces them to run during edit
+    }).exec();// exec to run the query
+    req.flash('success',`Successfully updated <strong>${store.name}</strong>.
+                <a href="/stores/${store.slug}">View Store</a>`);
+    res.redirect(`/stores/${store._id}/edit`);            
+}

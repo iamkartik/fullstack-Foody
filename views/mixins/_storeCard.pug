@@ -1,11 +1,16 @@
+
 mixin storeCard(store = {})
     .store
-        .store_hero
+        .store__hero
             .store__actions
-                button soon
+                .store__action.store__action--edit
+                    a(href=`/stores/${store._id}/edit`)
+                        // use != to tell pug that we are writing svg
+                        // h.icon is a function that reads an svg file 
+                        != h.icon('pencil')
             img(src=`/uploads/${store.photo || 'store.png'}`)
             h2.title
                 a(href=`/stores/${store.slug}`) #{store.name}
         .store__details
             // slice to keep description to 25 words atmost
-            p= store.description.split(' ').slice(0,25).join(' ')        
+            p= store.description.split(' ').slice(0,25).join(' ')      
