@@ -57,6 +57,8 @@ app.use((req, res, next) => {
   // the data passed during render is stored in locals 
   // add helper.js to that list for all the req
   res.locals.h = helpers;
+  // pull flashes set in previous req and save in locals.flashes
+  // the flashes can be picked in layout.pug
   res.locals.flashes = req.flash();
   res.locals.user = req.user || null;
   res.locals.currentPath = req.path;

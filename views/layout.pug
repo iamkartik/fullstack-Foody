@@ -38,13 +38,17 @@ html
 
     block messages
       if locals.flashes
+        //pre= h.dump(locals.flashes) // h.dump stringify's the object
         .inner
           .flash-messages
+            // get categories of flashes warn ,error , success etc
             - const categories = Object.keys(locals.flashes)
+            // loop over the categories and set the message in a new flash div
             each category in categories
               each message in flashes[category]
                 .flash(class=`flash--${category}`)
                   p.flash__text!= message
+                  // != parses the html so that html tags can appear in flashes
                   button.flash__remove(onClick="this.parentElement.remove()") &times;
     .content
       block content

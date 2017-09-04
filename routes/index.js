@@ -4,10 +4,15 @@ const express = require('express');
 // you can seperate the entire dog urls in dog.js and use app.use('/dogs', dog.js)
 const router = express.Router();
 const storeController = require('../controllers/storeController');
-
+// import only  catch errors function from errorHandlers
+// object-destructuring
 const { catchErrors } = require('../handlers/errorHandlers')
 
-router.get('/',storeController.homePage);
+
+// wrap async functions in catch errors function as they don't have an explicit try catch block
+// using function composition
+router.get('/',catchErrors(storeController.getStores));
+router.get('/stores',catchErrors(storeController.getStores));
 router.get('/add',storeController.addStore);
 router.post('/add',catchErrors(storeController.createStore));
 
