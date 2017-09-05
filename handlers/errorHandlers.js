@@ -30,6 +30,8 @@ exports.notFound = (req, res, next) => {
 */
 
 exports.flashValidationErrors = (err, req, res, next) => {
+  // if no err found in catchErrors , in case an err is thrown it will come to flashValidation
+  // instead of notFound where there is no err param
   if (!err.errors) return next(err);
   // validation errors look like
   const errorKeys = Object.keys(err.errors);

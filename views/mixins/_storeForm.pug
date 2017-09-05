@@ -10,6 +10,20 @@ mixin storeForm(store = {})
         label(for="description") Description
         // textarea there is no value so set with =
         textarea(name="description")= store.description
+        //- address lat and long . In app.js bodyparser has extended as true so that we can use 
+        //- nested properties
+        label(for="address") Address
+        //- address isthe nested property of location ie location.address
+        //- for add page store.location.address will not exist so need to put in () and run in &&
+        input(type="text" id="address" name="location[address]" 
+                value=(store.location&&store.location.address))
+        //- lat and long , mongodb takes longitute before latitude
+        label(for="lng") Address lng
+        input(type="text" id="lng" name="location[coordinates][0]" 
+                value=(store.location&&store.location.coordinates[0]))
+        label(for="lat") Address lat
+        input(type="text" id="lat" name="location[coordinates][1]" 
+                value=(store.location&&store.location.coordinates[1]))                
         - const choices = ['Wifi','Open Late','Family Friendly','Vegetarian','Licensed']
         - // for edit define initialize an array
         - const tags = store.tags || [] 

@@ -18,7 +18,27 @@ const storeSchema = new mongoose.Schema({
         type:String,
         trim:true
     },
-    tags:[String]
+    tags:[String],
+    // created date defaults to now
+    created:{
+        type:Date,
+        default:Date.now
+    },
+    // location of the store ,with type as point lat and long and an address
+    location:{
+        type:{
+            type:String,
+            default:'Point'
+        },
+        coordinates:[{
+            type:Number,
+            required:'You must supply coordinates'
+        }],
+        address:{
+            type:String,
+            required:'You must provide an address'
+        }
+    }
 });
 
 // before saving the store data , generate a slug - unique url for the store
