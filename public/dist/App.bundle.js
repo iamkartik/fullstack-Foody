@@ -113,6 +113,57 @@ __webpack_require__(1);
 
 var _bling = __webpack_require__(0);
 
+var _autocomplete = __webpack_require__(9);
+
+var _autocomplete2 = _interopRequireDefault(_autocomplete);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+(0, _autocomplete2.default)((0, _bling.$)('#address'), (0, _bling.$)('#lat'), (0, _bling.$)('#lng'));
+
+/***/ }),
+/* 3 */,
+/* 4 */,
+/* 5 */,
+/* 6 */,
+/* 7 */,
+/* 8 */,
+/* 9 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+function autocomplete(input, latInput, lngInput) {
+    // skip if no address is there
+    if (!input) return;
+    // add a dropdown using google maps/places autocomplete api
+    var dropdown = new google.maps.places.Autocomplete(input);
+    // add an event listener to get the selected address from dropdown
+    dropdown.addListener('place_changed', function () {
+        // get the place info of the selected place
+        var place = dropdown.getPlace();
+        // get the lat and lng info of the place 
+        latInput.value = place.geometry.location.lat();
+        lngInput.value = place.geometry.location.lng();
+    });
+    // prevent form submit on hitting enter on a form input
+    // bling.js syntax using on instead of addEventListener
+    input.on('keydown', function (e) {
+        // Enter keycode is 13
+        if (e.keyCode === 13) e.preventDefault();
+    });
+
+    /*
+    console.log(input,latInput,lngInput);
+    console.log(dropdown);*/
+}
+
+exports.default = autocomplete;
+
 /***/ })
 /******/ ]);
 //# sourceMappingURL=App.bundle.js.map
