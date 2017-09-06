@@ -38,7 +38,8 @@ const storeSchema = new mongoose.Schema({
             type:String,
             required:'You must provide an address'
         }
-    }
+    },
+    photo:String
 });
 
 // before saving the store data , generate a slug - unique url for the store

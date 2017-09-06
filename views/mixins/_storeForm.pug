@@ -2,7 +2,7 @@ mixin storeForm(store = {})
     // in case of edit the store variable gets the store data
     // in case of add the store variable defaults to an empty object
 
-    form(action=`/add/${store._id || ''}` method="POST" class="card")
+    form(action=`/add/${store._id || ''}` method="POST" class="card" enctype="multipart/form-data")
         // the name of input should match that of schema defined in model
         // if name="desc" in form it will not work ,it has to be name="description"
         label(for="name") Name
@@ -10,6 +10,13 @@ mixin storeForm(store = {})
         label(for="description") Description
         // textarea there is no value so set with =
         textarea(name="description")= store.description
+        //- Image upload code 
+        label(for="photo") Photo
+                // only accept image types of gif , png ,jpeg ...
+                input(type="file" id="photo" name="photo" accept="image/gif,image/png,image/jpeg")
+                //- if already there is a photo then display it
+                if store.photo
+                        img(src=`/uploads/${store.photo}` alt=store.name width=200)
         //- address lat and long . In app.js bodyparser has extended as true so that we can use 
         //- nested properties
         label(for="address") Address

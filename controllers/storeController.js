@@ -4,7 +4,29 @@ const mongoose = require('mongoose');
 // Store is already imported in start.js
 // now is available to mongoose 
 const Store = mongoose.model('Store');
+// multer allows to handle and access multipart data which is req in case of file upload
+const multer = require('multer');
+// jimp package for resizing the images
+const jimp = require('jimp');
+// uuid to make each image name unique
+const uuid = require('uuid'); 
 
+// options for multer , where to store the uploaded file and what extensions are allowed
+const multerOptions = {
+    storage:multer.memoryStorage(),// storing the file in memory to resize and save to disk later
+    fileFilter:(req,file,next)=>{ 
+        // this function allows us to pass the file if it's a photo otherwise reject it
+        // check for the mime type of the file
+        const isPhoto = file.mimetype.startsWith('image/');
+        if(isPhoto){
+            // no err pass true as callback
+            next(null,true);
+        }else{
+            // set error and pass false
+            next({message:'The filetype is not allowed'},false);
+        }
+    }
+};
 
 // index page render
 exports.homePage = (req,res)=>{
@@ -16,6 +38,31 @@ exports.addStore = (req,res)=>{
     // use edit store to add/edit store
     res.render('editStore',{title:'Add a new Store !'});
 };
+
+// middleware before creating a new store to handle file upload
+// .single() is used so that the check is only in the photo field of store form
+exports.upload = multer(multerOptions).single('photo');
+
+// after upload middleware the uploaded file is still in memory it needs to be resized
+exports.resize = async (req,res,next)=>{
+    // check if there is no new file to resize 
+    // multer will put the file in req.file property
+    if(!req.file) {
+        next();// skip to next middleware(createStore)
+        return;
+    }    
+    // mimetype will be like image/jpeg
+    const extension = req.file.mimetype.split('/')[1];
+    // unique photo name stored in body to be added in db
+    req.body.photo = `${uuid.v4()}.${extension}`;
+    // resize the photo , pass jimp filepath or buffer. Buffer is present in memory
+    const photo = await jimp.read(req.file.buffer);
+    // resize photo to 800 width and auto height
+    await photo.resize(800,jimp.AUTO);
+    // write to disk
+    await photo.write(`./public/uploads/${req.body.photo}`);
+    next();
+}
 
 exports.createStore = async (req,res)=>{
     // because we are using a strict schema 
