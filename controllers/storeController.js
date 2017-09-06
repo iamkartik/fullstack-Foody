@@ -104,3 +104,13 @@ exports.updateStore = async (req,res)=>{
                 <a href="/stores/${store.slug}">View Store</a>`);
     res.redirect(`/stores/${store._id}/edit`);            
 }
+
+exports.getStoreBySlug = async (req,res,next)=>{
+    const store = await Store.findOne({slug:req.params.slug});
+    // if no store is found go to 404 middleware
+    if(!store){
+        next();
+        return;
+    }
+    res.render('store',{store,title:store.name});
+}
