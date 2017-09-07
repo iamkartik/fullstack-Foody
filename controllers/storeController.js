@@ -116,7 +116,18 @@ exports.getStoreBySlug = async (req,res,next)=>{
 }
 
 exports.getStoresByTag = async (req,res)=>{
-    const tags = await Store.getTagsList();
     const currentTag = req.params.tag;
-    res.render('tags',{ tags , title:'Tags' , currentTag});
+    // get all stores on initial render of tags page
+    // $exists:true will return all where there is a tag property
+    const tagQuery = currentTag || {$exists:true} ;   
+    // in order to get data in parallel remove await and get the promise for tagList
+    const tagsPromise = Store.getTagsList();
+    // get the storePromise to get the stores where current tag is in the list of tags 
+    const storesPromise = Store.find({ tags:tagQuery });
+    // now await for both promises to fulfill
+    // result of the await is an array containing 2 arrays one for tags and one for stores 
+    // destructure them to get the individual arrays(es6)
+    const [tags,stores] = await Promise.all([ tagsPromise,storesPromise ]);
+
+    res.render('tags',{ tags ,stores, currentTag, title:'Tags'});
 }
