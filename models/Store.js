@@ -64,6 +64,26 @@ storeSchema.pre('save',async function(next){
     next();
 });
 
+// adding statics makes this a  function of the Store schema
+// using function here instead of () as this is required bound to the Store model and not the global this
+storeSchema.statics.getTagsList = function(){
+    // aggregate takes in an array as input 
+    // operators of aggregate allow for further filtering of data , group by , order by etc
+    // https://docs.mongodb.com/manual/aggregation/
+    // https://docs.mongodb.com/v3.2/reference/sql-aggregation-comparison/ 
+    // each operation is an object in the pipeline(array)
+    return this.aggregate([
+        // unwind - seperate on the basis of tags and for each tag have an instace of store(duplicate the data)
+        // ie {name:abc, tags:[x,y,c]} => {name:abc, tags:x},{name:abc, tags:y},{name:abc, tags:z}
+        { $unwind:'$tags'},
+        // after unwinding group the similar ones(based on tag ) and count 
+        // group will return a new object with id of tag name and a count
+        // count returns an value which is updated by sum , adding 1 to prev count
+        { $group:{ _id:'$tags',count:{ $sum:1 } } },
+        // finally sort the data ,based on tag count 1 ASC , -1 DSC 
+        { $sort:{ count:-1 } }
+    ]);
+}
 
 // export the object
 // using module.exports you can export the entire object
