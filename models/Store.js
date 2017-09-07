@@ -45,13 +45,22 @@ const storeSchema = new mongoose.Schema({
 // before saving the store data , generate a slug - unique url for the store
 // this will act as a middleare call next to go to save
 // use function instead of arrow , this context remains same in function whereas in => it changes
-storeSchema.pre('save',function(next){
+storeSchema.pre('save',async function(next){
     // generate slug only if the name has been modified
     if(!this.isModified('name')){
         next(); //skip slug generation and return 
         return;
     }
     this.slug = slug(this.name);
+    // find any other store with the same slug burger-king delhi/mumbai
+    // create regex to search 
+    // starts with burger-king and can end with  -1/-2 ... 
+    const slugRegex = new RegExp(`^(${this.slug})((-[0-9]*$)?)`,'i');
+    // this.constructor equals to Store model 
+    const storesWithSlug = await this.constructor.find({ slug:slugRegex });
+    if(storesWithSlug.length){
+        this.slug=`${this.slug}-${storesWithSlug.length + 1}`;
+    }
     next();
 });
 

@@ -73,7 +73,7 @@ exports.createStore = async (req,res)=>{
     // use flash to flash a message, flash added to req in app.js
     // flash takes 2 params type , msg , flashes will happen on the next req that comes to the server
     req.flash('success',`You have successfully added ${store.name} !`); 
-    res.redirect(`/store/${store.slug}`);
+    res.redirect(`/stores/${store.slug}`);
 }
 
 exports.getStores = async (req,res)=>{
