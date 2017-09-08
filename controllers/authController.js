@@ -8,3 +8,20 @@ exports.login = passport.authenticate('local',{
     successRedirect:'/',
     successFlash:'You have logged in'
 });
+
+exports.logout = (req,res)=>{
+    req.logout();
+    req.flash('success','You ar now logged out');
+    res.redirect('/');
+};
+// checks with passport if the user is logged in
+exports.isLoggedIn = (req,res,next)=>{
+    // check user is authenticatd
+    // isAuthenticated is a method put by passport during login
+    // returns true if user is logged in
+    if(req.isAuthenticated()){
+        next(); // logged in 
+    }
+    req.flash('error','Oops you must be logged in !');
+    res.redirect('/login');
+};

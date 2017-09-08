@@ -15,7 +15,9 @@ const { catchErrors } = require('../handlers/errorHandlers')
 // using function composition
 router.get('/',catchErrors(storeController.getStores));
 router.get('/stores',catchErrors(storeController.getStores));
-router.get('/add',storeController.addStore);
+// showing the add page to the user in ase they are already logged in
+router.get('/add',authController.isLoggedIn
+                    ,storeController.addStore);
 // first the file goes to multer to handle uploaded data , 
 // then the image is resized and then data stored in db
 router.post('/add',storeController.upload,
@@ -32,12 +34,15 @@ router.get('/tags',catchErrors(storeController.getStoresByTag));
 router.get('/tags/:tag',catchErrors(storeController.getStoresByTag));
 
 router.get('/login',userController.loginForm);
-router.post('/login',catchErrors(userController.loginForm));
+router.post('/login',authController.login);
+router.get('/logout',authController.logout);
 
 router.get('/register',userController.registerForm);
 // validate the data -> add the user in db -> login the user 
 router.post('/register',userController.validateRegister,
                         catchErrors(userController.register),
                         authController.login);
+
+
 
 module.exports = router;

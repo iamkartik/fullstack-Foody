@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 mongoose.Promise = global.Promise;
-// TODO:: change md5 to sha512
 const md5 = require('md5');
 const validator = require('validator');
 const mongodbErrorHandler = require('mongoose-mongodb-errors');
@@ -22,6 +21,14 @@ const userSchema= new Schema({
         required:'Please provide a name',
         trim:true
     }
+});
+
+// add a gravatar as a virtaula field , not being stored in the db , but pulling on the fly
+userSchema.virtual('gravatar').get(function(){
+    // can return a static url to an image 
+    // return `http://entertainment.inquirer.net/files/2016/07/13717225_1265259390150735_8093269019210020606_o.jpg`;
+    const hash = md5(this.email);
+    return `https://gravatar.com/avatar/${hash}?s=200`;
 });
 
 // plug the passport local mongoose to add the required fields and methods for login and auth(password etc)
