@@ -63,6 +63,8 @@ app.use((req, res, next) => {
   // pull flashes set in previous req and save in locals.flashes
   // the flashes can be picked in layout.pug
   res.locals.flashes = req.flash();
+  // setting the user object in locals to be available to the template
+  // if available - passport sets the user once login is done during serialize and deserialize
   res.locals.user = req.user || null;
   res.locals.currentPath = req.path;
   next();

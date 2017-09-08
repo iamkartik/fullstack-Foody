@@ -16,13 +16,14 @@ const { catchErrors } = require('../handlers/errorHandlers')
 router.get('/',catchErrors(storeController.getStores));
 router.get('/stores',catchErrors(storeController.getStores));
 // showing the add page to the user in ase they are already logged in
-router.get('/add',authController.isLoggedIn
-                    ,storeController.addStore);
+router.get('/add',authController.isLoggedIn,
+                    storeController.addStore);
 // first the file goes to multer to handle uploaded data , 
 // then the image is resized and then data stored in db
 router.post('/add',storeController.upload,
                     catchErrors(storeController.resize),
                     catchErrors(storeController.createStore));
+                    
 router.post('/add/:id',storeController.upload,
                     catchErrors(storeController.resize),
                     catchErrors(storeController.updateStore));
@@ -43,6 +44,8 @@ router.post('/register',userController.validateRegister,
                         catchErrors(userController.register),
                         authController.login);
 
-
+router.get('/account',authController.isLoggedIn,
+                        userController.account);
+router.post('/account',catchErrors(userController.updateAccount));
 
 module.exports = router;

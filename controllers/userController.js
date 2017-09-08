@@ -53,3 +53,24 @@ exports.register = async (req,res,next)=>{
     // pass to login
     next();
 };
+
+exports.account = (req,res)=>{
+    res.render('account',{title:'Edit your account'});
+};
+
+exports.updateAccount =async (req,res)=>{
+    const updates = {
+        name:req.body.name,
+        email:req.body.email
+    }
+    // find one and update takes the query to find , updates and options
+    const user = await User.findOneAndUpdate(
+        { _id:req.user._id },// query the db for the user using id
+        { $set:updates }, // the updates
+        // return new updated object , run the validations
+        { new:true, runValidators:true, context:'query' }
+    );
+    req.flash('success','Successfully updated the profile');
+    // redirect back sends back to the prev page 
+    res.redirect('back');    
+};
