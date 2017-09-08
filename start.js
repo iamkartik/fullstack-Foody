@@ -14,6 +14,7 @@ mongoose.connection.on('error', (err) => {
 
 // import all the models during app start (Singleton only initialize once)
 require('./models/Store'); 
+require('./models/User'); 
 
 // Start our app!
 const app = require('./app');

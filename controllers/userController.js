@@ -1,4 +1,7 @@
 const mongoose = require('mongoose');
+const User = mongoose.model('User');
+const promisify = require('es6-promisify');
+
 
 exports.loginForm = (req,res)=>{
     res.render('login',{title:'Login'})
@@ -36,5 +39,17 @@ exports.validateRegister = (req,res,next)=>{
         return;
     }
 
+    next();
+};
+
+exports.register = async (req,res,next)=>{
+    const user = new User({ email:req.body.email, name:req.body.name });
+    // not calling save instead calling .register ( passport function) it will hash the password and save it
+    // passport local returns a callback instead of a promise , using promisify to return a promise
+    // User.register is the method which we want to bind to User 
+    const registerPromise = promisify(User.register,User);
+    // passing the user object created and password to register
+    await registerPromise(user, req.body.password);
+    // pass to login
     next();
 };

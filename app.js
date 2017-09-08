@@ -12,6 +12,8 @@ const expressValidator = require('express-validator');
 const routes = require('./routes/index');
 const helpers = require('./helpers');
 const errorHandlers = require('./handlers/errorHandlers');
+// adding the passport strategy configuration here , required only once
+require('./handlers/passport'); 
 
 // create our Express app
 const app = express();

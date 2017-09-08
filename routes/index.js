@@ -5,6 +5,7 @@ const express = require('express');
 const router = express.Router();
 const storeController = require('../controllers/storeController');
 const userController = require('../controllers/userController');
+const authController = require('../controllers/authController');
 // import only  catch errors function from errorHandlers
 // object-destructuring
 const { catchErrors } = require('../handlers/errorHandlers')
@@ -34,7 +35,9 @@ router.get('/login',userController.loginForm);
 router.post('/login',catchErrors(userController.loginForm));
 
 router.get('/register',userController.registerForm);
-// validate data middleware, 
-router.post('/register',userController.validateRegister);
+// validate the data -> add the user in db -> login the user 
+router.post('/register',userController.validateRegister,
+                        catchErrors(userController.register),
+                        authController.login);
 
 module.exports = router;
