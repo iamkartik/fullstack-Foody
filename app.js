@@ -29,6 +29,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 // Exposes a bunch of methods for validating data. Used heavily on userController.validateRegister
+// validating against js injection script tags etc
 app.use(expressValidator());
 
 // populates req.cookies with any cookies that came along with the request
