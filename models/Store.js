@@ -39,7 +39,15 @@ const storeSchema = new mongoose.Schema({
             required:'You must provide an address'
         }
     },
-    photo:String
+    photo:String,
+    // author field , who created the store listing
+    // linking the user model with store 
+    author:{
+        // author id is of type _id( ObjectId ) like foreign key in sql
+        type:mongoose.Schema.ObjectId,
+        ref:'User',// tell that User will be referenced 
+        required:true
+    }
 });
 
 // before saving the store data , generate a slug - unique url for the store

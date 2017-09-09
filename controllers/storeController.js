@@ -65,6 +65,8 @@ exports.resize = async (req,res,next)=>{
 }
 
 exports.createStore = async (req,res)=>{
+    // adding the author as the person who is currently logged in
+    req.body.author = req.user._id;
     // because we are using a strict schema 
     // any other params in req.body will be rejected
     // we need slug info that is auto generated
@@ -82,11 +84,18 @@ exports.getStores = async (req,res)=>{
     // if property name equals the value name ,no need to pass the key explicitly
     res.render('stores',{title:'Stores',stores});
 }
+// if use async on a functionwithout await it will pass on to next line
+const confirmOwner = (store,user)=>{
+    if(!store.author.equals(user._id)){
+        throw Error('You must be a store owner in order to edit it!');        
+    }
+};
 
-exports.editStore = async (req,res)=>{
+exports.editStore = async (req,res)=>{   
     // get the store with the id , id in req.params(in url)
     const store = await Store.findOne({ _id:req.params.id });
-    // TODO::confirm they are the owners
+    //first confirm that the editor is the actual owner/ author of the page
+    confirmOwner(store,req.user);
     // store key is not required
     res.render('editStore',{title:`Edit ${store.name}`,store});
 }
@@ -106,7 +115,9 @@ exports.updateStore = async (req,res)=>{
 }
 
 exports.getStoreBySlug = async (req,res,next)=>{
+    // by adding populate we are asking to fetch the author's user data as well to be fetched
     const store = await Store.findOne({slug:req.params.slug});
+                                // .populate('author');
     // if no store is found go to 404 middleware
     if(!store){
         next();
