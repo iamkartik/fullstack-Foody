@@ -20,7 +20,9 @@ const userSchema= new Schema({
         type:String,
         required:'Please provide a name',
         trim:true
-    }
+    },
+    resetPasswordToken:String,// token and expires in case user forgets his/her password 
+    resetPasswordExpires:Date
 });
 
 // add a gravatar as a virtaula field , not being stored in the db , but pulling on the fly
