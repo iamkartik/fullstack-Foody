@@ -142,3 +142,30 @@ exports.getStoresByTag = async (req,res)=>{
 
     res.render('tags',{ tags ,stores, currentTag, title:'Tags'});
 }
+
+exports.searchStores = async (req,res)=>{
+    // using the index instead of searching name and description to search if it includes query
+    const stores = await Store
+    .find({
+        //https://docs.mongodb.com/manual/reference/operator/query/text/#op._S_text
+        $text:{ // $text allows us to search for text and the name and description fields are stored as text
+            $search:req.query.q// search for the query param
+        }
+    },{ // initial search is simple and returns data based ion the created date , does not sort on 
+        // ranking or closeness , using metadata to project(add) a field 'score' to do the sorting.
+        score:{
+            $meta:'textScore' // give score on the basis of relevance of text . coffee -> give coffee shop more
+                            // score than a bar also serving coffee 
+        }
+    })
+    // adding sort function to sort in the basis of score field added above , so that most relevent comes first
+    .sort({
+        score:{
+            $meta:'textScore'
+        }
+    })
+    // limit to limit the result to 5 relevent stores insearch bar
+    .limit(5);
+
+    res.json(stores);
+};

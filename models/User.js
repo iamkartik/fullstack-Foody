@@ -35,6 +35,7 @@ userSchema.virtual('gravatar').get(function(){
 
 // plug the passport local mongoose to add the required fields and methods for login and auth(password etc)
 // tell passport that username will be email
+// also causes email to become the index field for searching
 userSchema.plugin(passportLocalMongoose,{usernameField:'email'});
 
 // add error handler plugin to transform mangodb errors into readable errors (for unique field)

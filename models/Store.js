@@ -50,6 +50,15 @@ const storeSchema = new mongoose.Schema({
     }
 });
 
+// define our index , tell which fields should be indexed
+// name of store and description are indexed as text for searching 
+// name_text_description_text is the final compound index both used together
+// https://docs.mongodb.com/manual/core/index-compound/
+storeSchema.index({
+    name:'text',
+    description:'text'
+});
+
 // before saving the store data , generate a slug - unique url for the store
 // this will act as a middleare call next to go to save
 // use function instead of arrow , this context remains same in function whereas in => it changes
