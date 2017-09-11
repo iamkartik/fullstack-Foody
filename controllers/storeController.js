@@ -199,7 +199,11 @@ exports.mapStores = async (req,res)=>{
     const stores = await Store
                         .find(query)
                         .select('name description slug photo location')
-                        .limit(parseInt(req.query.limit));
+                        .limit((parseInt(req.query.limit)||10));
     
     res.json(stores);
+};
+
+exports.map = (req,res)=>{
+    res.render('map',{title:'map'});
 };
