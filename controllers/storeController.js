@@ -169,3 +169,37 @@ exports.searchStores = async (req,res)=>{
 
     res.json(stores);
 };
+
+// map stores will take a lat and a long and give stores near that
+exports.mapStores = async (req,res)=>{
+    // mongodb expects lat and long in array of numbers
+    // the req params are strings parse them to float
+    const coordinates = [req.query.lng,req.query.lat].map(parseFloat);
+    // query to find the stores near the given coordinates
+    const query ={
+        // run query on location param in store
+        location:{
+            // $near finds points near the given coordinate , starting from nearest to farthest
+            $near:{
+                // defines the geoJson object , here the type is a single point can be a polygon etc
+                // pass the coordinates to search near the area
+                $geometry:{
+                    type:'Point',
+                    coordinates
+                },
+            // maxDistance gives how far should the query look for in meters
+            $maxDistance:10000    // 10km
+            }
+        }
+    };
+    // .select allows to select/project the fields that should be returned as the result of the query
+    // if a field does not exist it will not show
+    // to exclude a field add '-' before it , -author 
+    // but only one "Projection cannot have a mix of inclusion and exclusion.""
+    const stores = await Store
+                        .find(query)
+                        .select('name description slug photo location')
+                        .limit(parseInt(req.query.limit));
+    
+    res.json(stores);
+};

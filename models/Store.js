@@ -59,6 +59,11 @@ storeSchema.index({
     description:'text'
 });
 
+// adding the geospatial index  location for searching on map/ near me feature
+storeSchema.index({
+    location:'2dsphere'
+});
+
 // before saving the store data , generate a slug - unique url for the store
 // this will act as a middleare call next to go to save
 // use function instead of arrow , this context remains same in function whereas in => it changes
@@ -80,6 +85,8 @@ storeSchema.pre('save',async function(next){
     }
     next();
 });
+
+// TODO:: add sanitization for xss before saving
 
 // adding statics makes this a  function of the Store schema
 // using function here instead of () as this is required bound to the Store model and not the global this
