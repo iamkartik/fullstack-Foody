@@ -10,6 +10,8 @@ const multer = require('multer');
 const jimp = require('jimp');
 // uuid to make each image name unique
 const uuid = require('uuid'); 
+ 
+const User = mongoose.model('User'); 
 
 // options for multer , where to store the uploaded file and what extensions are allowed
 const multerOptions = {
@@ -206,4 +208,21 @@ exports.mapStores = async (req,res)=>{
 
 exports.map = (req,res)=>{
     res.render('map',{title:'map'});
+};
+
+exports.heartStore = async (req,res)=>{
+    // get the hearts from the logeed in user 
+    // hearts are array of object id's convert them to string 
+    const hearts = req.user.hearts.map(obj=>obj.toString());
+    // get the appropriate operater ($) for the operation. If the user has already liked the store
+    // then they may want to unlike it ( $pull from the db),else incase the user has not liked it
+    // we need to add it( $addToSet addToSet will add unique and avoid duplicates)
+    const operater = hearts.includes(req.params.id) ? '$pull' :'$addToSet';
+    // update the user's data
+    const user = await User
+                        .findByIdAndUpdate(req.user._id ,// find the logged in user
+                        { [operater]:{hearts:req.params.id} },// pull/addtostore in hearts property the provided heart
+                        { new:true } // return the updated object
+                        );
+    res.json(user);                    
 };

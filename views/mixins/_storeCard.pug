@@ -3,6 +3,17 @@ mixin storeCard(store = {})
     .store
         .store__hero
             .store__actions
+                //-adding the heart symbol to like a store
+                //- only shown if the user is logged in
+                if user
+                    .store__action.store__action--heart
+                        form.heart(method="POST" action=`/api/stores/${store._id}/heart`)
+                            //- get the stores which are already liked by the user
+                            - const heartString = user.hearts.map(obj=>obj.toString())
+                            - const heartClass = heartString.includes(store._id.toString())?'heart__button--hearted':''
+                            button.heart__button(type="submit" name="heart" class=heartClass)
+                                //- load the heart svg icon inside the button
+                                != h.icon('heart')
                 if user && store.author.equals(user._id)
                     .store__action.store__action--edit
                         a(href=`/stores/${store._id}/edit`)

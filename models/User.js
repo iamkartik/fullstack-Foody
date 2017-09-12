@@ -22,7 +22,15 @@ const userSchema= new Schema({
         trim:true
     },
     resetPasswordToken:String,// token and expires in case user forgets his/her password 
-    resetPasswordExpires:Date
+    resetPasswordExpires:Date,
+    // adding a new field hearts to store what stores you have liked
+    // hearts will be an array containg the storeId's of the stores liked
+    hearts:[
+        {
+            type:mongoose.Schema.ObjectId,
+            ref:'Store'
+        }
+    ]
 });
 
 // add a gravatar as a virtaula field , not being stored in the db , but pulling on the fly
