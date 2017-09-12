@@ -56,6 +56,8 @@ router.post('/account/reset/:token',authController.confirmedPasswords,
                                         catchErrors(authController.update));
 
 router.get('/map',storeController.map);                                        
+router.get('/hearts',authController.isLoggedIn,
+                        catchErrors(storeController.heartedStores));
 
 // API Endpoints
 router.get('/api/search',catchErrors(storeController.searchStores));

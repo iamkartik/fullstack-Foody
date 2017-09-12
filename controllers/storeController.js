@@ -226,3 +226,10 @@ exports.heartStore = async (req,res)=>{
                         );
     res.json(user);                    
 };
+
+exports.heartedStores = async (req,res)=>{
+    const stores = await Store.find({
+        _id:{ $in:req.user.hearts } // $in looks for all the stores in the array
+    });
+    res.render('stores',{title:'Liked Stores',stores});
+};
