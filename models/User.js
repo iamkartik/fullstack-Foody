@@ -31,6 +31,9 @@ const userSchema= new Schema({
             ref:'Store'
         }
     ]
+},{   
+    toJSON:{ virtuals:true },
+    toObject:{ virtuals:true }
 });
 
 // add a gravatar as a virtaula field , not being stored in the db , but pulling on the fly

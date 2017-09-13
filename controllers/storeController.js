@@ -126,7 +126,7 @@ exports.getStoreBySlug = async (req,res,next)=>{
         next();
         return;
     }
-    res.render('store',{store,title:store.name});
+   res.render('store',{store,title:store.name});
 }
 
 exports.getStoresByTag = async (req,res)=>{
