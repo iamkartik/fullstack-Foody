@@ -114,6 +114,35 @@ storeSchema.statics.getTagsList = function(){
     ]);
 }
 
+
+// new method to aggregate stores based on ratings to get the top store
+storeSchema.statics.getTopStores = function(){
+    // returns a promise which can be awaited
+    return this.aggregate([
+        // Lookup Stores and populate their reviews
+        // cannot use virtual fields in aggregate as there is no actual field and aggregate works on model fields
+        // using $lookup(Performs a left outer join to an unsharded collection in the same database to filter in documents)
+        // https://docs.mongodb.com/manual/reference/operator/aggregation/lookup/
+        // lookup from reviews where the store._id === reviews.store and store as reviews field 
+        // mongodb stores models into collections , so Review -> reviews  
+        { $lookup:{from:'reviews',localField:'_id',foreignField:'store',as:'reviews'} },
+        // Filter for those with more than 2 reviews
+        // using $match to check which match the criteria 
+        // the reviews are stored in reviews field(array) , check if there is more than 1 item in the array
+        // reviews.0 - 1st item , reviews.1 -2nd item .......
+        { $match:{'reviews.1':{ $exists:true }} },
+        // Add a new average reviews field
+        // $addFields adds a new field to the the aggreagtion , which can be evaluated to an expression
+        // https://docs.mongodb.com/manual/reference/operator/aggregation/addFields/index.html
+        // '$review.rating' allows to access the data being piped
+        { $addFields:{ averageRating:{$avg:'$reviews.rating'} } },
+        // Sort according to average reviews
+        { $sort:{averageRating:-1} },
+        // limit to 10
+        { $limit:10 }
+    ]);
+}
+
 // Using virtual attributes to fetch reviews from the review schema .(JOIN data from 2 models)
 // Virtual attributes are attributes
 // that are convenient to have around but that do not get persisted to mongodb.
@@ -125,6 +154,14 @@ storeSchema.virtual('reviews',{
     // ie store._id is being checked in review, inside review it is stored in 'store' field
 });
 
+// autopopulate the reviews when find is run
+function autopopulate(next){
+    this.populate('reviews');
+    next();
+};
+
+storeSchema.pre('find',autopopulate);
+storeSchema.pre('findOne',autopopulate);
 
 // export the object
 // using module.exports you can export the entire object

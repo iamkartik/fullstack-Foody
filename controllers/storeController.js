@@ -234,3 +234,11 @@ exports.heartedStores = async (req,res)=>{
     });
     res.render('stores',{title:'Liked Stores',stores});
 };
+
+exports.topStores = async (req,res)=>{
+    // keep larger queries relating to aggregation in Model
+    const stores = await Store.getTopStores();
+    // const stores = await Store.find({});
+    //res.json(stores);
+    res.render('topStores',{stores,title:'Top Stores'});
+};
