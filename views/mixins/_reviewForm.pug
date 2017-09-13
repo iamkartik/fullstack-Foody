@@ -1,4 +1,4 @@
-mixin ReviewForm(store)
+mixin reviewForm(store)
     form.reviewer(action=`/reviews/${store._id}` method='POST')
         textarea(name="text" placeholder="Say something about this place")
         .reviewer__meta

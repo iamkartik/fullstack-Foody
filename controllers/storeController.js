@@ -118,8 +118,9 @@ exports.updateStore = async (req,res)=>{
 
 exports.getStoreBySlug = async (req,res,next)=>{
     // by adding populate we are asking to fetch the author's user data as well to be fetched
-    const store = await Store.findOne({slug:req.params.slug});
-                                // .populate('author');
+    // insted of user we'll populate the reviews data
+    const store = await Store.findOne({slug:req.params.slug})
+                                 .populate('reviews');
     // if no store is found go to 404 middleware
     if(!store){
         next();

@@ -48,6 +48,11 @@ const storeSchema = new mongoose.Schema({
         ref:'User',// tell that User will be referenced 
         required:true
     }
+},// adding options to include virtual fields(reviews) while converting to json/object
+  // by default they are not included  
+{   
+    toJSON:{ virtuals:true },
+    toObject:{ virtuals:true }
 });
 
 // define our index , tell which fields should be indexed
@@ -108,6 +113,18 @@ storeSchema.statics.getTagsList = function(){
         { $sort:{ count:-1 } }
     ]);
 }
+
+// Using virtual attributes to fetch reviews from the review schema .(JOIN data from 2 models)
+// Virtual attributes are attributes
+// that are convenient to have around but that do not get persisted to mongodb.
+// insted of getting data (gravatar in User.js ) passing an object to tell mongoose where to look for the data
+storeSchema.virtual('reviews',{
+    ref:'Review',// which model to look in for data
+    localField:'_id', // which field of our current store needs to match
+    foreignField:'store'// to which field it matches to inside review
+    // ie store._id is being checked in review, inside review it is stored in 'store' field
+});
+
 
 // export the object
 // using module.exports you can export the entire object
