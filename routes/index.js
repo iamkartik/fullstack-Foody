@@ -16,6 +16,8 @@ const { catchErrors } = require('../handlers/errorHandlers')
 // using function composition
 router.get('/',catchErrors(storeController.getStores));
 router.get('/stores',catchErrors(storeController.getStores));
+// adding a new one with pagination
+router.get('/stores/page/:page',catchErrors(storeController.getStores));
 // showing the add page to the user in ase they are already logged in
 router.get('/add',authController.isLoggedIn,
                     storeController.addStore);

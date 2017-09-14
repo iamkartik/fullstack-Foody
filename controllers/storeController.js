@@ -81,10 +81,32 @@ exports.createStore = async (req,res)=>{
 }
 
 exports.getStores = async (req,res)=>{
+    // changes for pagination
+    // get the page number 
+    const page = req.params.page || 1;
+    // numvber of stores per page
+    const limit = 4;
+    // skip the number of stores
+    const skip = ( page * limit ) - limit;
     // get all stores
-    const stores =await Store.find();
+    const storesPromise =Store
+                        .find()
+                        .skip(skip)
+                        .limit(limit)
+                        .sort({ created:'desc' });
+    // running two queries at once using Promise.all
+    const countPromise = Store.count();
+    // get the total count of stores and the paginated stores
+    const [stores,count] = await Promise.all([storesPromise,countPromise]);                    
+    // get the totl number of pages 
+    const pages = Math.ceil(count/limit);
+    // if user asks for a page that does not exist page/200 , redirect to last page 
+    if(!stores.length && skip){
+        req.flash('info',`The requested page ${page} does not exist.Redirecting to ${pages}`);
+        res.redirect(`/stores/page/${pages}`);
+    }
     // if property name equals the value name ,no need to pass the key explicitly
-    res.render('stores',{title:'Stores',stores});
+    res.render('stores',{title:'Stores',stores,count,page,pages});
 }
 // if use async on a functionwithout await it will pass on to next line
 const confirmOwner = (store,user)=>{
